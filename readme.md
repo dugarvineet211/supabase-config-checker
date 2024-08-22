@@ -22,12 +22,15 @@ It will check the following things and wherever possible will give you a solutio
 5. Run `node app.js`  to run the app on port 3001
 
 For FE
-	1. Go to frontend folder of the app.
-	2. Run `npm install` to install all dependencies.
-	3. Run `npm run start` to start the application
-	4. The FE should be running on `http://localhost:3000/`
+1. Go to frontend folder of the app.
+2. Run `npm install` to install all dependencies.
+3. Run `npm run start` to start the application
+4. The FE should be running on `http://localhost:3000/`
 
 ### Steps to test
 
 1. Hit the api `localhost:3001/checks/run-system-checks/:projectReference`  and in the headers, under Authorization pass, `Bearer YOUR_SUPABASE_ACCESS_KEY` which can be found in `https://supabase.com/dashboard/account/tokens` 
+
+Note: Please use a developer level token for this functionality since they have very restricted access
+
 2. This token is all you need to test all your configurations using this app.

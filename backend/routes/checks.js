@@ -15,30 +15,35 @@ function initializeSupabase(projectRef, key) {
   // function to fetch supabase client
   async function getClient(projectRef, accessKey) {
     try {
-        let projectData = await prisma.project.findFirst({
+        let projectData;
+        projectData = await prisma.project.findFirst({
             where: {
                 projectRef: `${projectRef}`
             }
         });
         if (!accessKey && !projectData && projectRef) {
-            throw new Error('Please provide an accessKey with your project reference since we dont have you in our system yet!');
+            throw new Error('Please provide an access Key with your project reference since we dont have you in our system yet!');
         } else if (accessKey && projectRef && !projectData) {
-            await prisma.project.create({
+            projectData = await prisma.project.create({
                 data: {
                     accessKey: encrypt(accessKey),
                     projectRef: projectRef
                 }
             });
         } else accessKey = decrypt(projectData.accessKey);
-          let apiKeyFetchData = await axios.get(`https://api.supabase.com/v1/projects/${projectRef}/api-keys`, {
-              headers: {
-                  Authorization: `Bearer ${accessKey}`
-              }
-          });
-          let apiKeyData = apiKeyFetchData.data[1];
-          let projectRoleKey = apiKeyData['api_key'];
-          let client = initializeSupabase(projectRef, projectRoleKey);
+          try {
+            let apiKeyFetchData = await axios.get(`https://api.supabase.com/v1/projects/${projectRef}/api-keys`, {
+                headers: {
+                    Authorization: `Bearer ${accessKey}`
+                }
+            });
+            let apiKeyData = apiKeyFetchData.data[1];
+            let projectRoleKey = apiKeyData['api_key'];
+            let client = initializeSupabase(projectRef, projectRoleKey);
           return {client, projectData, key: accessKey};
+          } catch(e) {
+            throw new Error ('Incorrect project reference or access key')
+          }
     } catch (e) {
         console.log(e);
         throw new Error(e);
@@ -112,7 +117,7 @@ function initializeSupabase(projectRef, key) {
         return true;
       } catch(e) {
         console.log(e);
-        throw new Error('Something went wrong!');
+        throw new Error('Something went wrong! Please check your access key!');
       }
   }
 
@@ -162,14 +167,14 @@ function initializeSupabase(projectRef, key) {
    return result; 
  } catch(e) {
     console.log(e);
-    throw new Error('Something went wrong!');
+    throw new Error('Something went wrong! Please check your access key');
  }
   }
 
 router.post('/run-system-checks/:projectRef', async (req, res, next) => {
   try {
     let projectRef = req.params.projectRef;
-    let accessKey = req.body.accessKey ? req.body.accessKey : null;
+    let accessKey = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null;
     let {client, projectData, key} = await getClient(projectRef, accessKey);
     if (!accessKey) 
         accessKey = key;
@@ -193,8 +198,9 @@ router.post('/run-system-checks/:projectRef', async (req, res, next) => {
     res.status(200);
     res.send({mfaData: mfaData, pitrData: pitrData, rlsData: rlsData});
   } catch(e) {
-    console.log(e);
-    next(e.message);
+    console.log(e.message);
+    res.status(404)
+    res.send(e.message);
   }
 });
 module.exports = router;

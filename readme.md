@@ -24,7 +24,8 @@ It will check the following things and wherever possible will give you a solutio
 For FE
 	1. Go to frontend folder of the app.
 	2. Run `npm install` to install all dependencies.
-	3. The FE should be running on `http://localhost:3000/`
+	3. Run `npm run start` to start the application
+	4. The FE should be running on `http://localhost:3000/`
 
 ### Steps to test
 

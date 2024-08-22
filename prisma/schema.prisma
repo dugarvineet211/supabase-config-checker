@@ -7,14 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int       @id @default(autoincrement())
-  username String
-  password String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-}
 
 model Project {
   id        Int       @id @default(autoincrement())
@@ -35,7 +27,6 @@ model Log {
   logMessage String?
   projectId Int
   project Project @relation(references: [id], fields: [projectId])
-  password String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }

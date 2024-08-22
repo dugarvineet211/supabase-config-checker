@@ -1,15 +1,4 @@
 -- CreateTable
-CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
-    "username" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Project" (
     "id" SERIAL NOT NULL,
     "projectRef" TEXT NOT NULL,
@@ -30,7 +19,6 @@ CREATE TABLE "Log" (
     "suggestedHelp" TEXT,
     "logMessage" TEXT,
     "projectId" INTEGER NOT NULL,
-    "password" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
